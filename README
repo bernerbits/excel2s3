@@ -1,0 +1,10 @@
+Requires Java 1.7 or higher and Maven 2.x (to build).
+To build, from the project directory:
+
+    mvn package
+
+To run, from the project directory, after building the package:
+
+    java -jar target/xltos3.jar sample.properties
+
+Note that the properties file must be configured for this to work. See the comments in sample.properties to finish configuration.
