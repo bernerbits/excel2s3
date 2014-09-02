@@ -1,5 +1,6 @@
 package net.bernerbits.client.avolve.model;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,6 +30,8 @@ public class TestFailedFolderSpreadsheet {
 	@Mock
 	private Logger logger;
 
+	private static final String SEP = File.separator;
+
 	@Test
 	public void testReadFailedFiles() {
 		Row topRow = mock(Row.class);
@@ -54,7 +57,7 @@ public class TestFailedFolderSpreadsheet {
 		assertEquals("197252/test_5dbef2a.pdf/test_5dbef2a.pdf",
 				f1.getUpstreamKey());
 		assertTrue(f1.getFileToReplace().getPath()
-				.endsWith("197252/test_5dbef2a.pdf/test_5dbef2a.pdf"));
+				.endsWith("197252" + SEP + "test_5dbef2a.pdf" + SEP + "test_5dbef2a.pdf"));
 
 		FailedFile f2 = failedFiles.get(1);
 		assertEquals("197252", f2.getFailedFolder());
@@ -62,7 +65,7 @@ public class TestFailedFolderSpreadsheet {
 		assertEquals("197252/test_9b70a6c.pdf/test_9b70a6c.pdf",
 				f2.getUpstreamKey());
 		assertTrue(f2.getFileToReplace().getPath()
-				.endsWith("197252/test_9b70a6c.pdf/test_9b70a6c.pdf"));
+				.endsWith("197252" + SEP + "test_9b70a6c.pdf" + SEP + "test_9b70a6c.pdf"));
 
 		verify(logger, never()).warn(any());
 	}
