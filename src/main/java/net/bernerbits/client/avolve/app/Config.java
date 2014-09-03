@@ -9,8 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import net.bernerbits.client.avolve.model.Buckets;
+import net.bernerbits.client.avolve.model.Bucket;
 import net.bernerbits.client.avolve.model.FailedFolderSpreadsheet;
+import net.bernerbits.client.avolve.model.FolderScanner;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -31,11 +32,11 @@ public class Config {
 	private static final Logger errlog = Logger.getLogger("errlog");
 	
 	private static final String PROPNAME_SPREADSHEET_PATH = "spreadsheet.path";
-	private static final String PROPNAME_PROJECT_BUCKET_PREFIX = "project.bucket.";
+	private static final String PROPNAME_AWS_BUCKET_NAME = "aws.bucket.name";
 	private static final String PROPNAME_AWS_KEY_SECRET = "aws.key.secret";
 	private static final String PROPNAME_AWS_KEY_ACCESS = "aws.key.access";
 	
-	private Buckets buckets;
+	private Bucket bucket;
 	private FailedFolderSpreadsheet spreadsheet;
 
 	private Config() {
@@ -73,15 +74,7 @@ public class Config {
 		AWSCredentialsProvider provider = new StaticCredentialsProvider(creds);
 		AmazonS3Client s3client = new AmazonS3Client(provider);
 
-		Map<String, String> projectIdToBucketNameMap = new HashMap<>();
-		for (String propertyName : properties.stringPropertyNames()) {
-			if (propertyName.startsWith(PROPNAME_PROJECT_BUCKET_PREFIX)) {
-				String projectId = propertyName.substring(15);
-				String bucketName = properties.getProperty(propertyName);
-				projectIdToBucketNameMap.put(projectId, bucketName);
-			}
-		}
-		config.buckets = new Buckets(s3client, projectIdToBucketNameMap);
+		config.bucket = new Bucket(s3client, properties.getProperty(PROPNAME_AWS_BUCKET_NAME));
 	}
 
 	private static void loadSpreadsheet(Config config, Properties properties) {
@@ -118,7 +111,7 @@ public class Config {
 	}
 
 	public AppContext getAppContext() {
-		return new AppContext(spreadsheet, buckets);
+		return new AppContext(spreadsheet, bucket, new FolderScanner());
 	}
 
 }

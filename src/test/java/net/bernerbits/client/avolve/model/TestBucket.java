@@ -26,7 +26,7 @@ public class TestBucket {
 	public void testUpload()
 	{
 		File actualFile = new File("test.pdf");
-		FailedFile failedFile = new FailedFile("folder", null, actualFile);
+		FailedFile failedFile = new FailedFile("folder", actualFile);
 		
 		Bucket bucket = new Bucket(s3Client, "bucket");
 		bucket.upload(failedFile);
@@ -38,7 +38,7 @@ public class TestBucket {
 	public void testVerifyUpstream()
 	{
 		File actualFile = new File("test.pdf");
-		FailedFile failedFile = spy(new FailedFile("folder", null, actualFile));
+		FailedFile failedFile = spy(new FailedFile("folder", actualFile));
 		
 		ObjectMetadata objectMetadata = mock(ObjectMetadata.class);
 		when(objectMetadata.getETag()).thenReturn("abcdef");
@@ -57,7 +57,7 @@ public class TestBucket {
 	public void testVerifyUpstreamFailed()
 	{
 		File actualFile = new File("test.pdf");
-		FailedFile failedFile = spy(new FailedFile("folder", null, actualFile));
+		FailedFile failedFile = spy(new FailedFile("folder", actualFile));
 		
 		ObjectMetadata objectMetadata = mock(ObjectMetadata.class);
 		when(objectMetadata.getETag()).thenReturn("abcdef");
@@ -76,7 +76,7 @@ public class TestBucket {
 	public void testVerifyUpstreamNullLocalMD5()
 	{
 		File actualFile = new File("test.pdf");
-		FailedFile failedFile = spy(new FailedFile("folder", null, actualFile));
+		FailedFile failedFile = spy(new FailedFile("folder", actualFile));
 		
 		ObjectMetadata objectMetadata = mock(ObjectMetadata.class);
 		when(objectMetadata.getETag()).thenReturn("abcdef");

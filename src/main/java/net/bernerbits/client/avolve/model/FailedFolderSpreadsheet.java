@@ -29,87 +29,37 @@ public class FailedFolderSpreadsheet {
 		this.eval = eval;
 	}
 
-	public List<FailedFile> readFailedFiles() {
-		List<FailedFile> failedFiles = new ArrayList<>();
+	public List<FailedFolder> readFailedFolders() {
+		List<FailedFolder> failedFolders = new ArrayList<>();
 		for (Row currentRow : sheet) {
 			if (currentRow.getRowNum() == sheet.getTopRow()) {
 				continue;
 			}
-			failedFiles.addAll(readFailedFilesFromRow(currentRow));
+			failedFolders.add(readFailedFolderFromRow(currentRow));
 		}
-		return failedFiles;
+		return failedFolders;
 	}
 
-	private List<FailedFile> readFailedFilesFromRow(Row currentRow) {
-		String sourceFolder = df.formatCellValue(currentRow.getCell(0), eval);
+	private FailedFolder readFailedFolderFromRow(Row currentRow) {
+		String sourceFolderPath = df.formatCellValue(currentRow.getCell(0), eval);
 		String failedFolder = df.formatCellValue(currentRow.getCell(1), eval);
 		String projectId = df.formatCellValue(currentRow.getCell(2), eval);
-
 		String fileNamePattern = df
 				.formatCellValue(currentRow.getCell(3), eval);
 
-		File folderToSearch = new File(new File(new File(sourceFolder),
-				projectId), failedFolder);
+		File sourceFolder;
 		try {
-			System.out.println("Searching folder: "
-					+ folderToSearch.getCanonicalPath());
+			sourceFolder = new File(sourceFolderPath).getCanonicalFile();
 		} catch (IOException e) {
-			errlog.fatal("Could not construct folder: " + sourceFolder + ", "
-					+ failedFolder + ", " + projectId);
+			errlog.fatal("Could not construct folder: " + sourceFolderPath);
 			e.printStackTrace();
 			System.exit(1);
 			return null;
 		}
-
-		return searchFolder(folderToSearch, failedFolder, fileNamePattern,
+		File folderToSearch = new File(sourceFolder, failedFolder);
+		
+		return new FailedFolder(folderToSearch, failedFolder, fileNamePattern,
 				projectId);
-	}
-
-	private List<FailedFile> searchFolder(File folderToSearch,
-			String failedFolder, String fileNamePattern, String projectId) {
-		List<FailedFile> failedFiles = new ArrayList<>();
-
-		if (!fileNamePattern.contains("xxx")) {
-			errlog.warn("WARNING! File Name Pattern \"" + fileNamePattern
-					+ "\" does not contain a wildcard indicator (\"xxx\").");
-		}
-		final Pattern fileNameMatcher = Pattern.compile(fileNamePattern
-				.replace(".", "\\.").replace("xxx", ".+"),
-				Pattern.CASE_INSENSITIVE);
-
-		File[] folders = folderToSearch.listFiles(new FileFilter() {
-
-			@Override
-			public boolean accept(File file) {
-				return file.isDirectory()
-						&& fileNameMatcher.matcher(file.getName()).matches();
-			}
-
-		});
-
-		for (File folder : folders) {
-			File[] files = folder.listFiles(new FilenameFilter() {
-
-				@Override
-				public boolean accept(File dir, String name) {
-					return dir.getName().equalsIgnoreCase(name);
-				}
-
-			});
-			for (File fileToReplace : files) {
-				try {
-					failedFiles.add(new FailedFile(failedFolder, projectId,
-							fileToReplace.getCanonicalFile()));
-				} catch (IOException e) {
-					errlog.warn("WARNING! Could not resolve file: "
-							+ fileToReplace.getPath()
-							+ ". File will not be replaced.");
-					e.printStackTrace();
-				}
-			}
-		}
-
-		return failedFiles;
 	}
 
 	/*package*/ void setLogger(Logger logger) {

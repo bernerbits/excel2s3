@@ -1,6 +1,7 @@
 package net.bernerbits.client.avolve.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,88 +31,38 @@ public class TestFailedFolderSpreadsheet {
 	@Mock
 	private Logger logger;
 
-	private static final String SEP = File.separator;
-
 	@Test
-	public void testReadFailedFiles() {
+	public void testReadFailedFiles() throws IOException {
 		Row topRow = mock(Row.class);
 		when(sheet.getTopRow()).thenReturn((short) 0);
 		when(topRow.getRowNum()).thenReturn(0);
 
 		Row firstDataRow = mockDataRow(1, "./test", "197252", "1", "xxx.pdf");
+		Row secondDataRow = mockDataRow(2, "./test", "21617", "2", "xxxA.pdf");
 
 		when(sheet.iterator()).thenReturn(
-				Arrays.asList(topRow, firstDataRow).iterator());
+				Arrays.asList(topRow, firstDataRow, secondDataRow).iterator());
 
 		FailedFolderSpreadsheet spreadsheet = new FailedFolderSpreadsheet(
 				sheet, df, eval);
 		spreadsheet.setLogger(logger);
-
-		List<FailedFile> failedFiles = spreadsheet.readFailedFiles();
-
-		assertEquals(2, failedFiles.size());
-
-		FailedFile f1 = failedFiles.get(0);
+		
+		List<FailedFolder> failedFolders = spreadsheet.readFailedFolders();
+		assertEquals(2, failedFolders.size());
+		
+		FailedFolder f1 = failedFolders.get(0);
+		assertEquals(new File("test/197252").getCanonicalFile(), f1.getFolderToSearch());
 		assertEquals("197252", f1.getFailedFolder());
 		assertEquals("1", f1.getProjectId());
-		assertEquals("197252/test_5dbef2a.pdf/test_5dbef2a.pdf",
-				f1.getUpstreamKey());
-		assertTrue(f1.getFileToReplace().getPath()
-				.endsWith("197252" + SEP + "test_5dbef2a.pdf" + SEP + "test_5dbef2a.pdf"));
-
-		FailedFile f2 = failedFiles.get(1);
-		assertEquals("197252", f2.getFailedFolder());
-		assertEquals("1", f2.getProjectId());
-		assertEquals("197252/test_9b70a6c.pdf/test_9b70a6c.pdf",
-				f2.getUpstreamKey());
-		assertTrue(f2.getFileToReplace().getPath()
-				.endsWith("197252" + SEP + "test_9b70a6c.pdf" + SEP + "test_9b70a6c.pdf"));
-
-		verify(logger, never()).warn(any());
+		assertEquals("xxx.pdf", f1.getFileNamePattern());
+		
+		FailedFolder f2 = failedFolders.get(1);
+		assertEquals(new File("test/21617").getCanonicalFile(), f2.getFolderToSearch());
+		assertEquals("21617", f2.getFailedFolder());
+		assertEquals("2", f2.getProjectId());
+		assertEquals("xxxA.pdf", f2.getFileNamePattern());
 	}
-
-	@Test
-	public void testReadFailedFilesBadPattern() {
-		Row topRow = mock(Row.class);
-		when(sheet.getTopRow()).thenReturn((short) 0);
-		when(topRow.getRowNum()).thenReturn(0);
-
-		Row firstDataRow = mockDataRow(1, "./test", "197252", "1", "xx.pdf");
-
-		when(sheet.iterator()).thenReturn(
-				Arrays.asList(topRow, firstDataRow).iterator());
-
-		FailedFolderSpreadsheet spreadsheet = new FailedFolderSpreadsheet(
-				sheet, df, eval);
-		spreadsheet.setLogger(logger);
-
-		List<FailedFile> failedFiles = spreadsheet.readFailedFiles();
-
-		assertEquals(0, failedFiles.size());
-		verify(logger).warn(any());
-	}
-
-	@Test
-	public void testReadFailedFilesSkipNonFolderFiles() {
-		Row topRow = mock(Row.class);
-		when(sheet.getTopRow()).thenReturn((short) 0);
-		when(topRow.getRowNum()).thenReturn(0);
-
-		Row firstDataRow = mockDataRow(1, "./test", "197252_bad", "1", "xxx.pdf");
-
-		when(sheet.iterator()).thenReturn(
-				Arrays.asList(topRow, firstDataRow).iterator());
-
-		FailedFolderSpreadsheet spreadsheet = new FailedFolderSpreadsheet(
-				sheet, df, eval);
-		spreadsheet.setLogger(logger);
-
-		List<FailedFile> failedFiles = spreadsheet.readFailedFiles();
-
-		assertEquals(0, failedFiles.size());
-		verify(logger, never()).warn(any());
-	}
-
+	
 	private Row mockDataRow(int rownum, String sourceFolder,
 			String failedFolder, String projectId, String filePattern) {
 		Row dataRow = mock(Row.class);

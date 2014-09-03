@@ -14,7 +14,7 @@ public class TestFailedFile {
 	@Test
 	public void testGetUpstreamKey()
 	{
-		FailedFile failedFile = new FailedFile("testfolder", null, new File("test.pdf"));
+		FailedFile failedFile = new FailedFile("testfolder", new File("test.pdf"));
 		assertEquals("testfolder/test.pdf/test.pdf", failedFile.getUpstreamKey());
 	}
 	
@@ -25,7 +25,7 @@ public class TestFailedFile {
 		try(Writer output = new FileWriter(tempFile)) {
 			output.write("Hello, world!");
 		}
-		FailedFile failedFile = new FailedFile(null, null, tempFile);
+		FailedFile failedFile = new FailedFile(null, tempFile);
 		assertEquals("6cd3556deb0da54bca060b4c39479839", failedFile.getLocalMD5());
 	}
 	
@@ -33,7 +33,7 @@ public class TestFailedFile {
 	public void testGetLocalMD5Fail() throws IOException
 	{
 		File missingFile = new File("missing.file");
-		FailedFile failedFile = new FailedFile(null, null, missingFile);
+		FailedFile failedFile = new FailedFile(null, missingFile);
 		assertEquals(null, failedFile.getLocalMD5());
 	}
 }

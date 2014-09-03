@@ -10,12 +10,10 @@ import com.amazonaws.util.Md5Utils;
 public class FailedFile {
 
 	private final String failedFolder;
-	private final String projectId;
 	private final File fileToReplace;
 
-	public FailedFile(String failedFolder, String projectId, File fileToReplace) {
+	public FailedFile(String failedFolder, File fileToReplace) {
 		this.failedFolder = failedFolder;
-		this.projectId = projectId;
 		this.fileToReplace = fileToReplace;
 	}
 
@@ -23,9 +21,6 @@ public class FailedFile {
 		return failedFolder;
 	}
 
-	public String getProjectId() {
-		return projectId;
-	}
 
 	public File getFileToReplace() {
 		return fileToReplace;
