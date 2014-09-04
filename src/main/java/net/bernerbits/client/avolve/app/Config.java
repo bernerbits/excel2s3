@@ -5,8 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import net.bernerbits.client.avolve.model.Bucket;
@@ -30,12 +28,13 @@ import com.amazonaws.services.s3.AmazonS3Client;
 public class Config {
 
 	private static final Logger errlog = Logger.getLogger("errlog");
-	
+
 	private static final String PROPNAME_SPREADSHEET_PATH = "spreadsheet.path";
+	private static final String PROPNAME_PROJECT_ID_ENABLED = "project.id.enabled";
 	private static final String PROPNAME_AWS_BUCKET_NAME = "aws.bucket.name";
-	private static final String PROPNAME_AWS_KEY_SECRET = "aws.key.secret";
-	private static final String PROPNAME_AWS_KEY_ACCESS = "aws.key.access";
-	
+	private static final String PROPNAME_AWS_KEY_SECRET = "aws.keys.secret";
+	private static final String PROPNAME_AWS_KEY_ACCESS = "aws.keys.access";
+
 	private Bucket bucket;
 	private FailedFolderSpreadsheet spreadsheet;
 
@@ -43,7 +42,7 @@ public class Config {
 	}
 
 	public static Config loadConfig(String propertiesPath) {
-		
+
 		Config config = new Config();
 		Properties properties = new Properties();
 		try (InputStream input = new FileInputStream(propertiesPath)) {
@@ -74,11 +73,15 @@ public class Config {
 		AWSCredentialsProvider provider = new StaticCredentialsProvider(creds);
 		AmazonS3Client s3client = new AmazonS3Client(provider);
 
-		config.bucket = new Bucket(s3client, properties.getProperty(PROPNAME_AWS_BUCKET_NAME));
+		config.bucket = new Bucket(s3client,
+				properties.getProperty(PROPNAME_AWS_BUCKET_NAME));
 	}
 
 	private static void loadSpreadsheet(Config config, Properties properties) {
-		String sourceSheetName = properties.getProperty(PROPNAME_SPREADSHEET_PATH);
+		String sourceSheetName = properties
+				.getProperty(PROPNAME_SPREADSHEET_PATH);
+		boolean projectIdEnabled = Boolean.valueOf(properties
+				.getProperty(PROPNAME_PROJECT_ID_ENABLED));
 
 		Workbook wb;
 		try (final InputStream raw = new FileInputStream(sourceSheetName);
@@ -107,7 +110,8 @@ public class Config {
 		DataFormatter df = new DataFormatter();
 		FormulaEvaluator eval = new XSSFFormulaEvaluator((XSSFWorkbook) wb);
 
-		config.spreadsheet = new FailedFolderSpreadsheet(s, df, eval);
+		config.spreadsheet = new FailedFolderSpreadsheet(s, df, eval,
+				projectIdEnabled);
 	}
 
 	public AppContext getAppContext() {

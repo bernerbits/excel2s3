@@ -1,12 +1,9 @@
 package net.bernerbits.client.avolve.model;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -21,12 +18,14 @@ public class FailedFolderSpreadsheet {
 	private final Sheet sheet;
 	private final DataFormatter df;
 	private final FormulaEvaluator eval;
+	private final boolean projectIdEnabled;
 
 	public FailedFolderSpreadsheet(Sheet sheet, DataFormatter df,
-			FormulaEvaluator eval) {
+			FormulaEvaluator eval, boolean projectIdEnabled) {
 		this.sheet = sheet;
 		this.df = df;
 		this.eval = eval;
+		this.projectIdEnabled = projectIdEnabled;
 	}
 
 	public List<FailedFolder> readFailedFolders() {
@@ -41,11 +40,9 @@ public class FailedFolderSpreadsheet {
 	}
 
 	private FailedFolder readFailedFolderFromRow(Row currentRow) {
-		String sourceFolderPath = df.formatCellValue(currentRow.getCell(0), eval);
+		String sourceFolderPath = df.formatCellValue(currentRow.getCell(0),
+				eval);
 		String failedFolder = df.formatCellValue(currentRow.getCell(1), eval);
-		String projectId = df.formatCellValue(currentRow.getCell(2), eval);
-		String fileNamePattern = df
-				.formatCellValue(currentRow.getCell(3), eval);
 
 		File sourceFolder;
 		try {
@@ -56,13 +53,20 @@ public class FailedFolderSpreadsheet {
 			System.exit(1);
 			return null;
 		}
-		File folderToSearch = new File(sourceFolder, failedFolder);
-		
-		return new FailedFolder(folderToSearch, failedFolder, fileNamePattern,
-				projectId);
+
+		File baseFolder;
+		if (projectIdEnabled) {
+			String projectId = df.formatCellValue(currentRow.getCell(2), eval);
+			baseFolder = new File(sourceFolder, projectId);
+		} else {
+			baseFolder = sourceFolder;
+		}
+		File folderToSearch = new File(baseFolder, failedFolder);
+
+		return new FailedFolder(folderToSearch, failedFolder);
 	}
 
-	/*package*/ void setLogger(Logger logger) {
+	/* package */void setLogger(Logger logger) {
 		this.errlog = logger;
 	}
 

@@ -25,59 +25,55 @@ public class TestFolderScanner {
 		FolderScanner folderScanner = new FolderScanner();
 		folderScanner.setLogger(logger);
 
-		FailedFolder failedFolder = new FailedFolder(new File("test/197252"),
-				"197252", "xxx.pdf", null);
+		File actualFailedFolder = new File("test/197252").getCanonicalFile();
+		FailedFolder failedFolder = new FailedFolder(actualFailedFolder,
+				"197252");
 
 		List<FailedFile> failedFiles = folderScanner.scanForFiles(failedFolder);
 
-		assertEquals(2, failedFiles.size());
+		assertEquals(4, failedFiles.size());
 
 		FailedFile f1 = failedFiles.get(0);
-		assertEquals("197252", f1.getFailedFolder());
-		assertEquals("197252/test_5dbef2a.pdf/test_5dbef2a.pdf",
+		assertEquals(actualFailedFolder, f1.getFailedFolder());
+		assertEquals("197252", f1.getFailedFolderName());
+		assertEquals("197252/test_5dbef2a.pdf/test_5dbef2a_v1.pdf",
 				f1.getUpstreamKey());
 		assertEquals(
-				new File("test/197252/test_5dbef2a.pdf/test_5dbef2a.pdf")
+				new File("test/197252/test_5dbef2a.pdf/test_5dbef2a_v1.pdf")
 						.getCanonicalFile(),
 				f1.getFileToReplace());
-
+		
 		FailedFile f2 = failedFiles.get(1);
-		assertEquals("197252", f2.getFailedFolder());
-		assertEquals("197252/test_9b70a6c.pdf/test_9b70a6c.pdf",
+		assertEquals(actualFailedFolder, f2.getFailedFolder());
+		assertEquals("197252", f2.getFailedFolderName());
+		assertEquals("197252/test_5dbef2a.pdf/test_5dbef2a_v2.pdf",
 				f2.getUpstreamKey());
 		assertEquals(
-				new File("test/197252/test_9b70a6c.pdf/test_9b70a6c.pdf")
+				new File("test/197252/test_5dbef2a.pdf/test_5dbef2a_v2.pdf")
 						.getCanonicalFile(),
 				f2.getFileToReplace());
 
+		FailedFile f3 = failedFiles.get(2);
+		assertEquals(actualFailedFolder, f3.getFailedFolder());
+		assertEquals("197252", f3.getFailedFolderName());
+		assertEquals("197252/test_5dbef2a.pdf/test_5dbef2a_v3.pdf",
+				f3.getUpstreamKey());
+		assertEquals(
+				new File("test/197252/test_5dbef2a.pdf/test_5dbef2a_v3.pdf")
+						.getCanonicalFile(),
+				f3.getFileToReplace());
+
+		FailedFile f4 = failedFiles.get(3);
+		assertEquals(actualFailedFolder, f4.getFailedFolder());
+		assertEquals("197252", f4.getFailedFolderName());
+		assertEquals("197252/test_9b70a6c.pdf/test_9b70a6c.pdf",
+				f4.getUpstreamKey());
+		assertEquals(
+				new File("test/197252/test_9b70a6c.pdf/test_9b70a6c.pdf")
+						.getCanonicalFile(),
+				f4.getFileToReplace());
+
 		verify(logger, never()).warn(any());
 	}
-	
-	@Test
-	public void testScanForFilesBadPattern() {
-		FolderScanner folderScanner = new FolderScanner();
-		folderScanner.setLogger(logger);
 
-		FailedFolder failedFolder = new FailedFolder(new File("test/197252"),
-				"197252", "xx.pdf", null);
-
-		List<FailedFile> failedFiles = folderScanner.scanForFiles(failedFolder);
-
-		assertEquals(0, failedFiles.size());
-		verify(logger).warn(any());
-	}
-
-	@Test
-	public void testScanForFilesSkipNonFolderFiles() {
-		FolderScanner folderScanner = new FolderScanner();
-		folderScanner.setLogger(logger);
-
-		FailedFolder failedFolder = new FailedFolder(new File("test/197252_bad"),
-				"197252_bad", "xxx.pdf", null);
-
-		List<FailedFile> failedFiles = folderScanner.scanForFiles(failedFolder);
-
-		assertEquals(0, failedFiles.size());
-		verify(logger, never()).warn(any());
-	}
 }
