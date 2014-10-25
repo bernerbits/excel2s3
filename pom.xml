@@ -108,6 +108,7 @@
 								<mainClass>net.bernerbits.client.avolve.RestoreS3FromSpreadsheet</mainClass>
 							</classPath>
 							<jre>
+							    <path>${java.home}/jre</path>
 								<minVersion>1.6.0</minVersion>
 								<jdkPreference>preferJre</jdkPreference>
 							</jre>
