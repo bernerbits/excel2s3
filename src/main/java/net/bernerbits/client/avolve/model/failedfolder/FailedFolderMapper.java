@@ -10,7 +10,7 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 
-public class FailedFolderMapper implements IRowMapper<FailedFolder> {
+public class FailedFolderMapper implements IRowMapper<File> {
 
 	private Logger errlog = Logger.getLogger("errlog");
 
@@ -27,7 +27,7 @@ public class FailedFolderMapper implements IRowMapper<FailedFolder> {
 	}
 
 	@Override
-	public FailedFolder scanRow(Row row) {
+	public File scanRow(Row row) {
 		String sourceFolderPath = df.formatCellValue(row.getCell(0), eval);
 		String failedFolder = df.formatCellValue(row.getCell(1), eval);
 
@@ -48,9 +48,7 @@ public class FailedFolderMapper implements IRowMapper<FailedFolder> {
 		} else {
 			baseFolder = sourceFolder;
 		}
-		File folderToSearch = new File(baseFolder, failedFolder);
-
-		return new FailedFolder(folderToSearch, failedFolder);
+		return new File(baseFolder, failedFolder);
 	}
 
 	/* package */void setLogger(Logger logger) {

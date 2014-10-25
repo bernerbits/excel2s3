@@ -24,30 +24,35 @@ public class Bucket {
 	}
 
 	public void upload(LocalFile localFile) {
-		System.out.println("Uploading file: "
-				+ localFile.getLocalFile().getPath());
-		System.out.println("\tBucket: " + bucketName);
-		System.out.println("\tRemote file: " + localFile.getUpstreamKey());
-
+		synchronized(System.out)
+		{
+			System.out.println("Uploading file: "
+					+ localFile.getLocalFile().getPath());
+			System.out.println("\tBucket: " + bucketName);
+			System.out.println("\tRemote file: " + localFile.getUpstreamKey());
+		}
 		s3client.putObject(bucketName, localFile.getUpstreamKey(),
 				localFile.getLocalFile());
 	}
 
 	public void verifyUpstream(LocalFile localFile) {
-		System.out.println("Verifying file: "
-				+ localFile.getLocalFile().getPath());
 		String upstreamMD5 = s3client.getObjectMetadata(bucketName,
 				localFile.getUpstreamKey()).getETag();
 		String localMD5 = localFile.getLocalMD5();
 		if (localMD5 != null) {
-			System.out.println("\tLocal MD5:  " + localMD5);
-			System.out.println("\tRemote MD5: " + upstreamMD5);
-			if (upstreamMD5.equals(localMD5)) {
-				System.out.println("Files are identical!");
-			} else {
-				errlog.warn("WARNING! MD5 sum mismatch found for file: "
-						+ localFile.getLocalFile().getPath()
-						+ "\nFiles are not identical!");
+			synchronized(System.out)
+			{
+				System.out.println("Verifying file: "
+						+ localFile.getLocalFile().getPath());
+				System.out.println("\tLocal MD5:  " + localMD5);
+				System.out.println("\tRemote MD5: " + upstreamMD5);
+				if (upstreamMD5.equals(localMD5)) {
+					System.out.println("Files are identical!");
+				} else {
+					errlog.warn("WARNING! MD5 sum mismatch found for file: "
+							+ localFile.getLocalFile().getPath()
+							+ "\nFiles are not identical!");
+				}
 			}
 		}
 	}

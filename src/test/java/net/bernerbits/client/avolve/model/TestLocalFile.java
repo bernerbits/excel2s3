@@ -12,20 +12,12 @@ import org.junit.Test;
 public class TestLocalFile {
 
 	@Test
-	public void testGetUpstreamKey() {
-		LocalFile failedFile = new LocalFile(new File("testfolder"),
-				new File("testfolder/test.pdf/test.pdf"));
-		assertEquals("testfolder/test.pdf/test.pdf",
-				failedFile.getUpstreamKey());
-	}
-
-	@Test
 	public void testGetLocalMD5() throws IOException {
 		File tempFile = File.createTempFile("test", ".pdf");
 		try (Writer output = new FileWriter(tempFile)) {
 			output.write("Hello, world!");
 		}
-		LocalFile failedFile = new LocalFile(null, tempFile);
+		LocalFile failedFile = new LocalFile(tempFile, null);
 		assertEquals("6cd3556deb0da54bca060b4c39479839",
 				failedFile.getLocalMD5());
 	}
@@ -33,7 +25,7 @@ public class TestLocalFile {
 	@Test
 	public void testGetLocalMD5Fail() throws IOException {
 		File missingFile = new File("missing.file");
-		LocalFile failedFile = new LocalFile(null, missingFile);
+		LocalFile failedFile = new LocalFile(missingFile, null);
 		assertEquals(null, failedFile.getLocalMD5());
 	}
 }

@@ -86,6 +86,22 @@
 							</transformers>
 						</configuration>
 					</execution>
+					<execution>
+						<id>shade-xrefimport</id>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<finalName>xref-import</finalName>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>net.bernerbits.client.avolve.CrossReferenceImport</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -109,8 +125,9 @@
 							</classPath>
 							<jre>
 							    <path>${java.home}/jre</path>
-								<minVersion>1.6.0</minVersion>
-								<jdkPreference>preferJre</jdkPreference>
+								<minVersion>1.7.0</minVersion>
+								<jdkPreference>jreOnly</jdkPreference>
+								<maxHeapSize>2048</maxHeapSize>
 							</jre>
 							<versionInfo>
 								<fileVersion>0.0.0.0</fileVersion>
@@ -123,6 +140,40 @@
 								<companyName>avolve</companyName>
 								<internalName>avolve</internalName>
 								<originalFilename>xltos3.exe</originalFilename>
+							</versionInfo>
+						</configuration>
+					</execution>
+					<execution>
+						<id>exe-xrefimport</id>
+						<phase>package</phase>
+						<goals>
+							<goal>launch4j</goal>
+						</goals>
+						<configuration>
+							<headerType>console</headerType>
+							<jar>${project.build.directory}/xref-import.jar</jar>
+							<outfile>${project.build.directory}/xref-import.exe</outfile>
+							<downloadUrl>http://java.com/download</downloadUrl>
+							<classPath>
+								<mainClass>net.bernerbits.client.avolve.CrossReferenceImport</mainClass>
+							</classPath>
+							<jre>
+							    <path>${java.home}/jre</path>
+								<minVersion>1.7.0</minVersion>
+								<jdkPreference>jreOnly</jdkPreference>
+								<maxHeapSize>2048</maxHeapSize>
+							</jre>
+							<versionInfo>
+								<fileVersion>0.0.0.0</fileVersion>
+								<txtFileVersion>${project.version}</txtFileVersion>
+								<fileDescription>xrefimport</fileDescription>
+								<copyright>2014 avolve</copyright>
+								<productVersion>0.0.0.0</productVersion>
+								<txtProductVersion>${project.version}</txtProductVersion>
+								<productName>xrefimport</productName>
+								<companyName>avolve</companyName>
+								<internalName>avolve</internalName>
+								<originalFilename>xref-import.exe</originalFilename>
 							</versionInfo>
 						</configuration>
 					</execution>

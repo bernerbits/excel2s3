@@ -4,16 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import net.bernerbits.client.avolve.model.failedfolder.FailedFolder;
 import net.bernerbits.client.avolve.model.sheet.IRowMapper;
 import net.bernerbits.client.avolve.model.sheet.SpreadsheetScanner;
 
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.junit.Test;
@@ -48,10 +45,11 @@ public class TestSpreadsheetScanner {
 		when(sheet.iterator()).thenReturn(
 				Arrays.asList(topRow, firstDataRow, secondDataRow).iterator());
 
-		SpreadsheetScanner<Object> scanner = new SpreadsheetScanner<Object>(rowMapper);
+		SpreadsheetScanner<Object> scanner = new SpreadsheetScanner<Object>(
+				rowMapper);
 
 		List<Object> scannedData = scanner.scan(sheet);
-		
+
 		assertEquals(2, scannedData.size());
 
 		Object data1 = scannedData.get(0);

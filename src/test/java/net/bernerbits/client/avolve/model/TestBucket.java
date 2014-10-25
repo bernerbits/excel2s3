@@ -26,25 +26,25 @@ public class TestBucket {
 	public void testUpload()
 	{
 		File actualFile = new File("folder/test.pdf/test_v1.pdf");
-		LocalFile failedFile = new LocalFile(new File("folder"), actualFile);
+		LocalFile failedFile = new LocalFile(actualFile, "key");
 		
 		Bucket bucket = new Bucket(s3Client, "bucket");
 		bucket.upload(failedFile);
 		
-		verify(s3Client).putObject("bucket", "folder/test.pdf/test_v1.pdf", actualFile);
+		verify(s3Client).putObject("bucket", "key", actualFile);
 	}
 	
 	@Test
 	public void testVerifyUpstream()
 	{
 		File actualFile = new File("folder/test.pdf/test_v1.pdf");
-		LocalFile failedFile = spy(new LocalFile(new File("folder"), actualFile));
+		LocalFile failedFile = spy(new LocalFile(actualFile, "key"));
 		
 		ObjectMetadata objectMetadata = mock(ObjectMetadata.class);
 		when(objectMetadata.getETag()).thenReturn("abcdef");
 		
 		doReturn("abcdef").when(failedFile).getLocalMD5();
-		when(s3Client.getObjectMetadata("bucket", "folder/test.pdf/test_v1.pdf")).thenReturn(objectMetadata);
+		when(s3Client.getObjectMetadata("bucket", "key")).thenReturn(objectMetadata);
 		
 		Bucket bucket = new Bucket(s3Client, "bucket");
 		bucket.setLogger(logger);
@@ -57,13 +57,13 @@ public class TestBucket {
 	public void testVerifyUpstreamFailed()
 	{
 		File actualFile = new File("folder/test.pdf/test_v1.pdf");
-		LocalFile failedFile = spy(new LocalFile(new File("folder"), actualFile));
+		LocalFile failedFile = spy(new LocalFile(actualFile, "key"));
 		
 		ObjectMetadata objectMetadata = mock(ObjectMetadata.class);
 		when(objectMetadata.getETag()).thenReturn("abcdef");
 		
 		doReturn("fedcba").when(failedFile).getLocalMD5();
-		when(s3Client.getObjectMetadata("bucket", "folder/test.pdf/test_v1.pdf")).thenReturn(objectMetadata);
+		when(s3Client.getObjectMetadata("bucket", "key")).thenReturn(objectMetadata);
 		
 		Bucket bucket = new Bucket(s3Client, "bucket");
 		bucket.setLogger(logger);
@@ -76,13 +76,13 @@ public class TestBucket {
 	public void testVerifyUpstreamNullLocalMD5()
 	{
 		File actualFile = new File("folder/test.pdf/test_v1.pdf");
-		LocalFile failedFile = spy(new LocalFile(new File("folder"), actualFile));
+		LocalFile failedFile = spy(new LocalFile(actualFile, "key"));
 		
 		ObjectMetadata objectMetadata = mock(ObjectMetadata.class);
 		when(objectMetadata.getETag()).thenReturn("abcdef");
 		
 		doReturn(null).when(failedFile).getLocalMD5();
-		when(s3Client.getObjectMetadata("bucket", "folder/test.pdf/test_v1.pdf")).thenReturn(objectMetadata);
+		when(s3Client.getObjectMetadata("bucket", "key")).thenReturn(objectMetadata);
 		
 		Bucket bucket = new Bucket(s3Client, "bucket");
 		bucket.setLogger(logger);

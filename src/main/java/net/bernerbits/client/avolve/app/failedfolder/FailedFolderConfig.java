@@ -1,5 +1,6 @@
 package net.bernerbits.client.avolve.app.failedfolder;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -7,9 +8,8 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import net.bernerbits.client.avolve.app.Config;
-import net.bernerbits.client.avolve.model.FolderScanner;
-import net.bernerbits.client.avolve.model.failedfolder.FailedFolder;
 import net.bernerbits.client.avolve.model.failedfolder.FailedFolderMapper;
+import net.bernerbits.client.avolve.model.failedfolder.FailedFolderScanner;
 import net.bernerbits.client.avolve.model.sheet.SpreadsheetScanner;
 
 import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
@@ -62,7 +62,9 @@ public class FailedFolderConfig extends Config<FailedFolderAppContext> {
 			return null;
 		}
 
-		config.sheet = loadSpreadsheet(properties);
+		config.sheet = loadSpreadsheet(
+				properties.getProperty(PROPNAME_SPREADSHEET_PATH),
+				0);
 		config.bucket = loadS3Client(properties);
 		config.folderMapper = getFailedFolderMapper(config.sheet, properties);
 
@@ -71,8 +73,7 @@ public class FailedFolderConfig extends Config<FailedFolderAppContext> {
 
 	@Override
 	public FailedFolderAppContext getAppContext() {
-		return new FailedFolderAppContext(sheet,
-				new SpreadsheetScanner<FailedFolder>(folderMapper), bucket,
-				new FolderScanner());
+		return new FailedFolderAppContext(sheet, new SpreadsheetScanner<File>(
+				folderMapper), bucket, new FailedFolderScanner());
 	}
 }

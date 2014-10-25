@@ -20,7 +20,11 @@ public class SpreadsheetScanner<T> {
 			if (currentRow.getRowNum() == sheet.getTopRow()) {
 				continue;
 			}
-			data.add(rowMapper.scanRow(currentRow));
+			T element = rowMapper.scanRow(currentRow);
+			if(element != null)
+			{
+				data.add(element);
+			}
 		}
 		return data;
 	}

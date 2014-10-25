@@ -4,13 +4,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
 import java.util.Arrays;
 
-import net.bernerbits.client.avolve.app.failedfolder.FailedFolderAppContext;
 import net.bernerbits.client.avolve.model.Bucket;
 import net.bernerbits.client.avolve.model.LocalFile;
-import net.bernerbits.client.avolve.model.FolderScanner;
-import net.bernerbits.client.avolve.model.failedfolder.FailedFolder;
+import net.bernerbits.client.avolve.model.failedfolder.FailedFolderScanner;
 import net.bernerbits.client.avolve.model.sheet.SpreadsheetScanner;
 
 import org.apache.poi.ss.usermodel.Sheet;
@@ -27,14 +26,14 @@ public class TestFailedFolderAppContext {
 	@Mock
 	private Sheet sheet;
 	@Mock
-	private SpreadsheetScanner<FailedFolder> sheetScanner;
+	private SpreadsheetScanner<File> sheetScanner;
 	@Mock
-	private FolderScanner folderScanner;
+	private FailedFolderScanner failedFolderScanner;
 
 	@Test
 	public void testReplaceFailedFiles() {
-		FailedFolder failedFolder1 = mock(FailedFolder.class);
-		FailedFolder failedFolder2 = mock(FailedFolder.class);
+		File failedFolder1 = mock(File.class);
+		File failedFolder2 = mock(File.class);
 
 		LocalFile failedFile1 = mock(LocalFile.class);
 		LocalFile failedFile2 = mock(LocalFile.class);
@@ -43,13 +42,13 @@ public class TestFailedFolderAppContext {
 		when(sheetScanner.scan(sheet)).thenReturn(
 				Arrays.asList(failedFolder1, failedFolder2));
 
-		when(folderScanner.scanForFiles(failedFolder1)).thenReturn(
+		when(failedFolderScanner.scanForFiles(failedFolder1)).thenReturn(
 				Arrays.asList(failedFile1, failedFile2));
-		when(folderScanner.scanForFiles(failedFolder2)).thenReturn(
+		when(failedFolderScanner.scanForFiles(failedFolder2)).thenReturn(
 				Arrays.asList(failedFile3));
 
 		FailedFolderAppContext appContext = new FailedFolderAppContext(sheet,
-				sheetScanner, bucket, folderScanner);
+				sheetScanner, bucket, failedFolderScanner);
 		appContext.replaceFailedFiles();
 
 		verify(bucket).upload(failedFile1);

@@ -8,21 +8,13 @@ import org.apache.commons.codec.binary.Hex;
 import com.amazonaws.util.Md5Utils;
 
 public class LocalFile {
-
-	private final File localFolder;
+	
 	private final File localFile;
-
-	public LocalFile(File localFolder, File localFile) {
-		this.localFolder = localFolder;
+	private final String upstreamKey;
+	
+	public LocalFile(File localFile, String upstreamKey) {
 		this.localFile = localFile;
-	}
-
-	public String getLocalFolderName() {
-		return localFolder.getName();
-	}
-
-	public File getLocalFolder() {
-		return localFolder;
+		this.upstreamKey = upstreamKey;
 	}
 
 	public File getLocalFile() {
@@ -30,12 +22,7 @@ public class LocalFile {
 	}
 
 	public String getUpstreamKey() {
-		return localFolder.getName() + getRelativePath();
-	}
-
-	public String getRelativePath() {
-		return localFile.getPath().replace(localFolder.getPath(), "")
-				.replace('\\', '/');
+		return upstreamKey;
 	}
 
 	public String getLocalMD5() {
