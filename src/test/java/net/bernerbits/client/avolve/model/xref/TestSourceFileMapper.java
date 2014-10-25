@@ -25,10 +25,11 @@ public class TestSourceFileMapper extends RowMapperTest {
 
 		LocalFile file = mapper.scanRow(dataRow);
 
-		assertEquals("/home/file/file", file.getLocalFile().getPath());
+		assertEquals(new File("/home/file/file").getCanonicalFile(),
+				file.getLocalFile());
 		assertEquals("123/file/file", file.getUpstreamKey());
 	}
-	
+
 	@Test
 	public void testScanRowSpecificFile() throws IOException {
 		Row dataRow = mockDataRow(1, "456", null, null, null, null, null, null,
@@ -39,7 +40,8 @@ public class TestSourceFileMapper extends RowMapperTest {
 
 		LocalFile file = mapper.scanRow(dataRow);
 
-		assertEquals("/home/file/file_V2", file.getLocalFile().getPath());
+		assertEquals(new File("/home/file/file_V2").getCanonicalFile(),
+				file.getLocalFile());
 		assertEquals("456/file/file_V2", file.getUpstreamKey());
 	}
 }
