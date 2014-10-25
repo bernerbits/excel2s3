@@ -7,8 +7,8 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import net.bernerbits.client.avolve.app.Config;
-import net.bernerbits.client.avolve.model.FailedFolder;
 import net.bernerbits.client.avolve.model.FolderScanner;
+import net.bernerbits.client.avolve.model.failedfolder.FailedFolder;
 import net.bernerbits.client.avolve.model.failedfolder.FailedFolderMapper;
 import net.bernerbits.client.avolve.model.sheet.SpreadsheetScanner;
 

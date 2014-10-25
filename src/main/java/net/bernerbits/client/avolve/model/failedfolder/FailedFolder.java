@@ -1,4 +1,4 @@
-package net.bernerbits.client.avolve.model;
+package net.bernerbits.client.avolve.model.failedfolder;
 
 import java.io.File;
 

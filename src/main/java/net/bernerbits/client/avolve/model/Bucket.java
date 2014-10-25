@@ -23,22 +23,22 @@ public class Bucket {
 		return bucketName;
 	}
 
-	public void upload(FailedFile failedFile) {
+	public void upload(LocalFile localFile) {
 		System.out.println("Uploading file: "
-				+ failedFile.getFileToReplace().getPath());
+				+ localFile.getLocalFile().getPath());
 		System.out.println("\tBucket: " + bucketName);
-		System.out.println("\tRemote file: " + failedFile.getUpstreamKey());
+		System.out.println("\tRemote file: " + localFile.getUpstreamKey());
 
-		s3client.putObject(bucketName, failedFile.getUpstreamKey(),
-				failedFile.getFileToReplace());
+		s3client.putObject(bucketName, localFile.getUpstreamKey(),
+				localFile.getLocalFile());
 	}
 
-	public void verifyUpstream(FailedFile failedFile) {
+	public void verifyUpstream(LocalFile localFile) {
 		System.out.println("Verifying file: "
-				+ failedFile.getFileToReplace().getPath());
+				+ localFile.getLocalFile().getPath());
 		String upstreamMD5 = s3client.getObjectMetadata(bucketName,
-				failedFile.getUpstreamKey()).getETag();
-		String localMD5 = failedFile.getLocalMD5();
+				localFile.getUpstreamKey()).getETag();
+		String localMD5 = localFile.getLocalMD5();
 		if (localMD5 != null) {
 			System.out.println("\tLocal MD5:  " + localMD5);
 			System.out.println("\tRemote MD5: " + upstreamMD5);
@@ -46,7 +46,7 @@ public class Bucket {
 				System.out.println("Files are identical!");
 			} else {
 				errlog.warn("WARNING! MD5 sum mismatch found for file: "
-						+ failedFile.getFileToReplace().getPath()
+						+ localFile.getLocalFile().getPath()
 						+ "\nFiles are not identical!");
 			}
 		}

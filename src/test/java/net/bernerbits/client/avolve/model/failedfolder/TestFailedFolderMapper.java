@@ -7,8 +7,6 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 
-import net.bernerbits.client.avolve.model.FailedFolder;
-
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;

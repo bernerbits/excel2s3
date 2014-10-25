@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import net.bernerbits.client.avolve.model.failedfolder.FailedFolder;
+
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,53 +27,52 @@ public class TestFolderScanner {
 		FolderScanner folderScanner = new FolderScanner();
 		folderScanner.setLogger(logger);
 
-		File actualFailedFolder = new File("test/197252").getCanonicalFile();
-		FailedFolder failedFolder = new FailedFolder(actualFailedFolder,
-				"197252");
+		File actualLocalFolder = new File("test/197252").getCanonicalFile();
+		FailedFolder LocalFolder = new FailedFolder(actualLocalFolder, "197252");
 
-		List<FailedFile> failedFiles = folderScanner.scanForFiles(failedFolder);
+		List<LocalFile> localFiles = folderScanner.scanForFiles(LocalFolder);
 
-		assertEquals(4, failedFiles.size());
+		assertEquals(4, localFiles.size());
 
-		FailedFile f1 = failedFiles.get(0);
-		assertEquals(actualFailedFolder, f1.getFailedFolder());
-		assertEquals("197252", f1.getFailedFolderName());
+		LocalFile f1 = localFiles.get(0);
+		assertEquals(actualLocalFolder, f1.getLocalFolder());
+		assertEquals("197252", f1.getLocalFolderName());
 		assertEquals("197252/test_5dbef2a.pdf/test_5dbef2a_v1.pdf",
 				f1.getUpstreamKey());
 		assertEquals(
 				new File("test/197252/test_5dbef2a.pdf/test_5dbef2a_v1.pdf")
 						.getCanonicalFile(),
-				f1.getFileToReplace());
-		
-		FailedFile f2 = failedFiles.get(1);
-		assertEquals(actualFailedFolder, f2.getFailedFolder());
-		assertEquals("197252", f2.getFailedFolderName());
+				f1.getLocalFile());
+
+		LocalFile f2 = localFiles.get(1);
+		assertEquals(actualLocalFolder, f2.getLocalFolder());
+		assertEquals("197252", f2.getLocalFolderName());
 		assertEquals("197252/test_5dbef2a.pdf/test_5dbef2a_v2.pdf",
 				f2.getUpstreamKey());
 		assertEquals(
 				new File("test/197252/test_5dbef2a.pdf/test_5dbef2a_v2.pdf")
 						.getCanonicalFile(),
-				f2.getFileToReplace());
+				f2.getLocalFile());
 
-		FailedFile f3 = failedFiles.get(2);
-		assertEquals(actualFailedFolder, f3.getFailedFolder());
-		assertEquals("197252", f3.getFailedFolderName());
+		LocalFile f3 = localFiles.get(2);
+		assertEquals(actualLocalFolder, f3.getLocalFolder());
+		assertEquals("197252", f3.getLocalFolderName());
 		assertEquals("197252/test_5dbef2a.pdf/test_5dbef2a_v3.pdf",
 				f3.getUpstreamKey());
 		assertEquals(
 				new File("test/197252/test_5dbef2a.pdf/test_5dbef2a_v3.pdf")
 						.getCanonicalFile(),
-				f3.getFileToReplace());
+				f3.getLocalFile());
 
-		FailedFile f4 = failedFiles.get(3);
-		assertEquals(actualFailedFolder, f4.getFailedFolder());
-		assertEquals("197252", f4.getFailedFolderName());
+		LocalFile f4 = localFiles.get(3);
+		assertEquals(actualLocalFolder, f4.getLocalFolder());
+		assertEquals("197252", f4.getLocalFolderName());
 		assertEquals("197252/test_9b70a6c.pdf/test_9b70a6c.pdf",
 				f4.getUpstreamKey());
 		assertEquals(
 				new File("test/197252/test_9b70a6c.pdf/test_9b70a6c.pdf")
 						.getCanonicalFile(),
-				f4.getFileToReplace());
+				f4.getLocalFile());
 
 		verify(logger, never()).warn(any());
 	}

@@ -3,7 +3,6 @@ package net.bernerbits.client.avolve.model.failedfolder;
 import java.io.File;
 import java.io.IOException;
 
-import net.bernerbits.client.avolve.model.FailedFolder;
 import net.bernerbits.client.avolve.model.sheet.IRowMapper;
 
 import org.apache.log4j.Logger;

@@ -8,9 +8,9 @@ import java.util.Arrays;
 
 import net.bernerbits.client.avolve.app.failedfolder.FailedFolderAppContext;
 import net.bernerbits.client.avolve.model.Bucket;
-import net.bernerbits.client.avolve.model.FailedFile;
-import net.bernerbits.client.avolve.model.FailedFolder;
+import net.bernerbits.client.avolve.model.LocalFile;
 import net.bernerbits.client.avolve.model.FolderScanner;
+import net.bernerbits.client.avolve.model.failedfolder.FailedFolder;
 import net.bernerbits.client.avolve.model.sheet.SpreadsheetScanner;
 
 import org.apache.poi.ss.usermodel.Sheet;
@@ -36,9 +36,9 @@ public class TestFailedFolderAppContext {
 		FailedFolder failedFolder1 = mock(FailedFolder.class);
 		FailedFolder failedFolder2 = mock(FailedFolder.class);
 
-		FailedFile failedFile1 = mock(FailedFile.class);
-		FailedFile failedFile2 = mock(FailedFile.class);
-		FailedFile failedFile3 = mock(FailedFile.class);
+		LocalFile failedFile1 = mock(LocalFile.class);
+		LocalFile failedFile2 = mock(LocalFile.class);
+		LocalFile failedFile3 = mock(LocalFile.class);
 
 		when(sheetScanner.scan(sheet)).thenReturn(
 				Arrays.asList(failedFolder1, failedFolder2));

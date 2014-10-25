@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import net.bernerbits.client.avolve.model.FailedFolder;
+import net.bernerbits.client.avolve.model.failedfolder.FailedFolder;
 import net.bernerbits.client.avolve.model.sheet.IRowMapper;
 import net.bernerbits.client.avolve.model.sheet.SpreadsheetScanner;
 

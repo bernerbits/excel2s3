@@ -9,11 +9,11 @@ import java.io.Writer;
 
 import org.junit.Test;
 
-public class TestFailedFile {
+public class TestLocalFile {
 
 	@Test
 	public void testGetUpstreamKey() {
-		FailedFile failedFile = new FailedFile(new File("testfolder"),
+		LocalFile failedFile = new LocalFile(new File("testfolder"),
 				new File("testfolder/test.pdf/test.pdf"));
 		assertEquals("testfolder/test.pdf/test.pdf",
 				failedFile.getUpstreamKey());
@@ -25,7 +25,7 @@ public class TestFailedFile {
 		try (Writer output = new FileWriter(tempFile)) {
 			output.write("Hello, world!");
 		}
-		FailedFile failedFile = new FailedFile(null, tempFile);
+		LocalFile failedFile = new LocalFile(null, tempFile);
 		assertEquals("6cd3556deb0da54bca060b4c39479839",
 				failedFile.getLocalMD5());
 	}
@@ -33,7 +33,7 @@ public class TestFailedFile {
 	@Test
 	public void testGetLocalMD5Fail() throws IOException {
 		File missingFile = new File("missing.file");
-		FailedFile failedFile = new FailedFile(null, missingFile);
+		LocalFile failedFile = new LocalFile(null, missingFile);
 		assertEquals(null, failedFile.getLocalMD5());
 	}
 }

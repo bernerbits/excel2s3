@@ -5,22 +5,24 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.bernerbits.client.avolve.model.failedfolder.FailedFolder;
+
 import org.apache.log4j.Logger;
 
 public class FolderScanner {
 	private Logger errlog = Logger.getLogger("errlog");
 
-	public List<FailedFile> scanForFiles(FailedFolder failedFolder) {
+	public List<LocalFile> scanForFiles(FailedFolder failedFolder) {
 		System.out.println("Searching folder: "
 				+ failedFolder.getFolderToSearch().getPath());
 
-		List<FailedFile> failedFiles = new ArrayList<>();
+		List<LocalFile> failedFiles = new ArrayList<>();
 
 		List<File> allFiles = recursiveScan(failedFolder.getFolderToSearch());
 
 		for (File fileToReplace : allFiles) {
 			try {
-				failedFiles.add(new FailedFile(failedFolder.getFolderToSearch(),
+				failedFiles.add(new LocalFile(failedFolder.getFolderToSearch(),
 						fileToReplace.getCanonicalFile()));
 			} catch (IOException e) {
 				errlog.warn("WARNING! Could not resolve file: "

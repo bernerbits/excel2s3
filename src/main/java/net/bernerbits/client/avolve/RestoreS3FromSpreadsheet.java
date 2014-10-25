@@ -8,7 +8,7 @@ public class RestoreS3FromSpreadsheet {
 	public static void main(String[] args) {
 		if (args.length != 1) {
 			System.err
-					.println("Usage: java -jar target/xltos3.jar <path-to-config-file>");
+					.println("Usage: xltos3 <path-to-config-file>");
 			return;
 		}
 		FailedFolderConfig config = FailedFolderConfig.loadConfig(args[0]);
