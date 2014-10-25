@@ -1,4 +1,4 @@
-package net.bernerbits.client.avolve.app;
+package net.bernerbits.client.avolve.app.failedfolder;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -6,24 +6,28 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
+import net.bernerbits.client.avolve.app.failedfolder.FailedFolderAppContext;
 import net.bernerbits.client.avolve.model.Bucket;
 import net.bernerbits.client.avolve.model.FailedFile;
 import net.bernerbits.client.avolve.model.FailedFolder;
-import net.bernerbits.client.avolve.model.FailedFolderSpreadsheet;
 import net.bernerbits.client.avolve.model.FolderScanner;
+import net.bernerbits.client.avolve.model.sheet.SpreadsheetScanner;
 
+import org.apache.poi.ss.usermodel.Sheet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TestAppContext {
+public class TestFailedFolderAppContext {
 
 	@Mock
 	private Bucket bucket;
 	@Mock
-	private FailedFolderSpreadsheet spreadsheet;
+	private Sheet sheet;
+	@Mock
+	private SpreadsheetScanner<FailedFolder> sheetScanner;
 	@Mock
 	private FolderScanner folderScanner;
 
@@ -36,7 +40,7 @@ public class TestAppContext {
 		FailedFile failedFile2 = mock(FailedFile.class);
 		FailedFile failedFile3 = mock(FailedFile.class);
 
-		when(spreadsheet.readFailedFolders()).thenReturn(
+		when(sheetScanner.scan(sheet)).thenReturn(
 				Arrays.asList(failedFolder1, failedFolder2));
 
 		when(folderScanner.scanForFiles(failedFolder1)).thenReturn(
@@ -44,8 +48,8 @@ public class TestAppContext {
 		when(folderScanner.scanForFiles(failedFolder2)).thenReturn(
 				Arrays.asList(failedFile3));
 
-		AppContext appContext = new AppContext(spreadsheet, bucket,
-				folderScanner);
+		FailedFolderAppContext appContext = new FailedFolderAppContext(sheet,
+				sheetScanner, bucket, folderScanner);
 		appContext.replaceFailedFiles();
 
 		verify(bucket).upload(failedFile1);
